@@ -1,0 +1,95 @@
+finsim/
+│
+├── app.py                              # Main Flask app, all API routes
+├── requirements.txt                    # Python dependencies
+│
+├── game_engine.py                      # Stock market simulator (GBM, regimes, indices, sectors)
+├── stock_data.py                       # 60+ stock universe + fallback generator
+├── news_engine.py                      # News templates and feed
+├── events_engine.py                    # Random events
+├── options_engine.py                   # Black-Scholes options pricing + chains
+├── crypto_engine.py                    # 15 cryptocurrencies + staking
+├── realestate_engine.py                # 12 properties with appreciation
+├── bonds_engine.py                     # 10 bonds (Treasury/Corporate/Muni)
+├── forex_engine.py                     # 12 currency pairs with leverage
+├── etf_engine.py                       # 20 ETFs and mutual funds
+├── career_engine.py                    # 10-level career ladder
+├── tax_engine.py                       # Federal tax bracket calculator
+├── earnings_engine.py                  # Earnings calendar + beat/miss
+├── sec_engine.py                       # SEC filings + insider trades
+├── blackswan_engine.py                 # Black swan event triggers
+├── leaderboard_engine.py               # Global leaderboard
+├── bot_engine.py                       # Trading bot backtester
+│
+├── templates/
+│   └── index.html                      # Single-page app shell
+│
+└── static/
+    │
+    ├── css/
+    │   ├── themes.css                  # 6 themes (dark/light/terminal/dracula/ocean/blood)
+    │   ├── styles.css                  # Reset, intro, sidebar, topbar, ticker
+    │   ├── components.css              # Cards, tabs, pills, tables, buttons, inputs, modals, toasts
+    │   ├── charts.css                  # Chart toolbar, timeframes, crosshair, tooltips
+    │   ├── pages.css                   # Dashboard grid, markets, portfolio, banking, casino, skills, achievements
+    │   └── extended.css                # Command palette, heatmap, leaderboard, options, crypto, real estate, etc.
+    │
+    ├── js/
+    │   │
+    │   │   # ============ CORE INFRASTRUCTURE ============
+    │   ├── state.js                    # FinState — persistent state manager
+    │   ├── sound.js                    # Web Audio synthesized sounds
+    │   ├── counter.js                  # Animated number counter
+    │   ├── api.js                      # API wrapper with caching
+    │   ├── sparkline.js                # Mini sparkline renderer (Canvas)
+    │   ├── charts.js                   # FinChart — full chart class (line/candle/indicators/drawings)
+    │   ├── modals.js                   # Modal + Toast + Confirm system
+    │   ├── notifications.js            # Browser notifications API
+    │   │
+    │   │   # ============ SYSTEMS ============
+    │   ├── news.js                     # News feed panel
+    │   ├── events.js                   # Random events + Black Swan + Breaking news overlay
+    │   ├── streak.js                   # Daily login streak
+    │   ├── season.js                   # Season pass / battle pass
+    │   ├── tipster.js                  # Insider tipster (skill-gated)
+    │   ├── onboarding.js               # Interactive tour with spotlight
+    │   ├── share.js                    # Portfolio share card
+    │   ├── widgets.js                  # Floating draggable mini charts
+    │   │
+    │   │   # ============ ORIGINAL PAGES ============
+    │   ├── market.js                   # Markets discovery + stock detail + trade panel
+    │   ├── portfolio.js                # Portfolio overview with allocation donut
+    │   ├── banking.js                  # Wallet / Cards / Loans
+    │   ├── transactions.js             # Transaction ledger
+    │   ├── casino.js                   # 6 games: Roulette, Poker, Blackjack, Slots, Plinko, Lottery
+    │   ├── skills.js                   # SVG skill tree
+    │   ├── achievements.js             # Achievement system
+    │   ├── settings.js                 # 9-section settings page
+    │   │
+    │   │   # ============ NEW PAGES (Mega Update) ============
+    │   ├── options.js                  # Options trading with full chain
+    │   ├── crypto.js                   # Crypto exchange
+    │   ├── realestate.js               # Real estate portfolio
+    │   ├── bonds.js                    # Bond market
+    │   ├── forex.js                    # Forex trading
+    │   ├── etfs.js                     # ETFs and mutual funds
+    │   ├── career.js                   # Career ladder
+    │   ├── tax.js                      # Tax center
+    │   ├── earnings.js                 # Earnings calendar with reveal
+    │   ├── sec.js                      # SEC filings viewer
+    │   ├── leaderboard.js              # Global leaderboard
+    │   ├── heatmap.js                  # Market heatmap
+    │   ├── compare.js                  # Multi-stock comparison
+    │   ├── botbuilder.js               # AI trading bot builder
+    │   ├── predictions.js              # Prediction markets
+    │   ├── pet.js                      # Trading pet/mascot
+    │   ├── mining.js                   # Crypto mining
+    │   │
+    │   │   # ============ DASHBOARD + ROUTING + APP ============
+    │   ├── dashboard.js                # Main dashboard (matches screenshot)
+    │   ├── cmdk.js                     # Command palette (Cmd+K)
+    │   ├── cheats.js                   # FINSIM cheat console
+    │   ├── router.js                   # Page router with all routes
+    │   └── app.js                      # Bootstrap, intro, mount, background loops
+    │
+    └── img/                            # (Optional — for any image assets)

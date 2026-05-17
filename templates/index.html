@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FinSim — Financial Simulation</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+<link rel="stylesheet" href="/static/css/themes.css" />
+<link rel="stylesheet" href="/static/css/styles.css" />
+<link rel="stylesheet" href="/static/css/components.css" />
+<link rel="stylesheet" href="/static/css/charts.css" />
+<link rel="stylesheet" href="/static/css/pages.css" />
+
+<style>
+  /* ── Sidebar scroll fix ─────────────────────────────────────────── */
+
+  /* The sidebar clips to its own height — change overflow-y to allow
+     the nav to scroll while still hiding the x-axis (for the hover expand) */
+  .sidebar {
+    overflow-y: visible !important; /* let the nav determine scroll */
+  }
+
+  .sidebar-nav {
+    /* Remove the fixed flex column so height is constrained by the sidebar */
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    /* Cap height to remaining space: 100vh minus logo (64px) */
+    max-height: calc(100vh - 64px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.10) transparent;
+  }
+
+  .sidebar-nav::-webkit-scrollbar        { width: 3px; }
+  .sidebar-nav::-webkit-scrollbar-track  { background: transparent; }
+  .sidebar-nav::-webkit-scrollbar-thumb  { background: rgba(255,255,255,0.15); border-radius: 99px; }
+  .sidebar-nav::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+  /* Category labels — hidden when sidebar is collapsed, revealed on hover */
+  .nav-category {
+    padding: 16px 22px 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    /* collapsed: invisible but takes no visual space until hover */
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: opacity 200ms ease, max-height 200ms ease, padding 200ms ease;
+  }
+
+  /* first category needs no top gap */
+  .nav-category:first-child { margin-top: 8px; }
+
+  /* reveal labels when sidebar is hovered/expanded */
+  .sidebar:hover .nav-category {
+    opacity: 1;
+    max-height: 32px;
+    padding-top: 16px;
+    padding-bottom: 4px;
+  }
+
+  /* divider before System section */
+  .nav-divider { margin: 8px 18px; }
+
+  /* ─────────────────────────────────────────────────────────────────── */
+</style>
+</head>
+<body>
+
+<!-- ============ INTRO / MODE SELECT ============ -->
+<div id="intro-screen" class="intro-screen">
+  <div class="intro-inner">
+    <div class="intro-logo">
+      <div class="intro-logo-mark">C</div>
+      <div class="intro-logo-text">FinSim</div>
+      <div class="intro-tagline">Master the Markets</div>
+    </div>
+
+    <div id="mode-select" class="mode-select hidden">
+      <h2 class="mode-title">Choose Your Mode</h2>
+      <p class="mode-subtitle">You can change this later in Settings</p>
+
+      <div class="mode-cards">
+        <div class="mode-card" data-mode="casual">
+          <div class="mode-card-icon"><span class="material-symbols-outlined">stadia_controller</span></div>
+          <h3>Casual Mode</h3>
+          <p>Skill trees, powerups, achievements, casino, cheat codes &amp; random events.</p>
+          <ul class="mode-features">
+            <li><span class="material-symbols-outlined">check</span>Skill Tree</li>
+            <li><span class="material-symbols-outlined">check</span>Achievements</li>
+            <li><span class="material-symbols-outlined">check</span>Casino &amp; Lottery</li>
+            <li><span class="material-symbols-outlined">check</span>Random Events</li>
+          </ul>
+          <button class="mode-btn">Start Casual</button>
+        </div>
+
+        <div class="mode-card" data-mode="realistic">
+          <div class="mode-card-icon"><span class="material-symbols-outlined">trending_up</span></div>
+          <h3>Realistic Mode</h3>
+          <p>Pure market simulation. No powerups. No shortcuts. Just you and the market.</p>
+          <ul class="mode-features">
+            <li><span class="material-symbols-outlined">close</span>No Skill Tree</li>
+            <li><span class="material-symbols-outlined">close</span>No Achievements</li>
+            <li><span class="material-symbols-outlined">check</span>Full Market Engine</li>
+            <li><span class="material-symbols-outlined">check</span>Authentic Trading</li>
+          </ul>
+          <button class="mode-btn">Start Realistic</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div id="app" class="app hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">C</div>
+    </div>
+    <nav class="sidebar-nav" id="sidebar-nav">
+
+      <!-- OVERVIEW -->
+      <div class="nav-category">Overview</div>
+      <a class="nav-item active" data-page="dashboard">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item" data-page="markets">
+        <span class="material-symbols-outlined">monitoring</span>
+        <span class="nav-label">Markets</span>
+      </a>
+      <a class="nav-item" data-page="screener">
+        <span class="material-symbols-outlined">filter_alt</span>
+        <span class="nav-label">Screener</span>
+      </a>
+
+      <!-- TRADING -->
+      <div class="nav-category">Trading</div>
+      <a class="nav-item" data-page="portfolio">
+        <span class="material-symbols-outlined">work</span>
+        <span class="nav-label">Portfolio</span>
+      </a>
+      <a class="nav-item" data-page="watchlist">
+        <span class="material-symbols-outlined">bookmark</span>
+        <span class="nav-label">Watchlist</span>
+      </a>
+      <a class="nav-item" data-page="alerts">
+        <span class="material-symbols-outlined">notifications_active</span>
+        <span class="nav-label">Alerts</span>
+      </a>
+
+      <!-- FINANCE -->
+      <div class="nav-category">Finance</div>
+      <a class="nav-item" data-page="banking">
+        <span class="material-symbols-outlined">account_balance</span>
+        <span class="nav-label">Banking</span>
+      </a>
+      <a class="nav-item" data-page="transactions">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span class="nav-label">Transactions</span>
+      </a>
+
+      <!-- CASUAL (hidden in realistic mode) -->
+      <div class="nav-category casual-only">Casual</div>
+      <a class="nav-item casual-only" data-page="casino">
+        <span class="material-symbols-outlined">casino</span>
+        <span class="nav-label">Casino</span>
+      </a>
+      <a class="nav-item casual-only" data-page="skills">
+        <span class="material-symbols-outlined">account_tree</span>
+        <span class="nav-label">Skills</span>
+      </a>
+      <a class="nav-item casual-only" data-page="achievements">
+        <span class="material-symbols-outlined">emoji_events</span>
+        <span class="nav-label">Achievements</span>
+      </a>
+
+      <!-- SYSTEM -->
+      <div class="nav-divider"></div>
+      <div class="nav-category">System</div>
+      <a class="nav-item" data-page="settings">
+        <span class="material-symbols-outlined">settings</span>
+        <span class="nav-label">Settings</span>
+      </a>
+      <a class="nav-item" data-page="support">
+        <span class="material-symbols-outlined">support</span>
+        <span class="nav-label">Support</span>
+      </a>
+
+    </nav>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="search-box">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" id="global-search" placeholder="Search stocks, news, pages…" />
+          <div id="search-dropdown" class="search-dropdown hidden"></div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" id="btn-quickadd" title="Quick Actions">
+          <span class="material-symbols-outlined">apps_outage</span>
+        </button>
+        <button class="icon-btn" id="btn-news" title="News">
+          <span class="material-symbols-outlined">forum</span>
+        </button>
+        <button class="icon-btn" id="btn-notifications" title="Notifications">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="badge-dot"></span>
+        </button>
+        <div class="topbar-divider"></div>
+        <div class="user-chip" id="user-chip">
+          <div class="avatar"><span class="material-symbols-outlined">person</span></div>
+          <span class="material-symbols-outlined chev">expand_more</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- TICKER TAPE -->
+    <div class="ticker-bar">
+      <div class="ticker-track" id="ticker-track"></div>
+      <div class="ticker-time" id="ticker-time">
+        <span class="material-symbols-outlined">schedule</span>
+        <span id="ticker-clock">--:--</span>
+      </div>
+    </div>
+
+    <!-- PAGE CONTAINER -->
+    <div class="page-container" id="page-container">
+      <!-- pages injected here -->
+    </div>
+
+  </main>
+</div>
+
+<!-- ============ MODAL ROOT ============ -->
+<div id="modal-root"></div>
+
+<!-- ============ TOAST ROOT ============ -->
+<div id="toast-root" class="toast-root"></div>
+
+<!-- ============ CHEAT PANEL ============ -->
+<div id="cheat-panel" class="cheat-panel hidden">
+  <div class="cheat-header">
+    <span class="material-symbols-outlined">terminal</span>
+    <span>CHEAT CONSOLE</span>
+    <button class="icon-btn" onclick="document.getElementById('cheat-panel').classList.add('hidden')">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="cheat-body" id="cheat-body"></div>
+</div>
+<link rel="stylesheet" href="/static/css/extended.css" />
+
+<!-- Place this at the bottom of <body> -->
+<script src="/static/js/state.js"></script>
+<script src="/static/js/sound.js"></script>
+<script src="/static/js/counter.js"></script>
+<script src="/static/js/api.js"></script>
+<script src="/static/js/sparkline.js"></script>
+<script src="/static/js/charts.js"></script>
+<script src="/static/js/modals.js"></script>
+<script src="/static/js/notifications.js"></script>
+<script src="/static/js/news.js"></script>
+<script src="/static/js/events.js"></script>
+<script src="/static/js/streak.js"></script>
+<script src="/static/js/season.js"></script>
+<script src="/static/js/tipster.js"></script>
+<script src="/static/js/onboarding.js"></script>
+<script src="/static/js/share.js"></script>
+<script src="/static/js/widgets.js"></script>
+
+<script src="/static/js/market.js"></script>
+<script src="/static/js/portfolio.js"></script>
+<script src="/static/js/banking.js"></script>
+<script src="/static/js/transactions.js"></script>
+<script src="/static/js/casino.js"></script>
+<script src="/static/js/skills.js"></script>
+<script src="/static/js/achievements.js"></script>
+<script src="/static/js/settings.js"></script>
+
+<!-- NEW PAGES -->
+<script src="/static/js/options.js"></script>
+<script src="/static/js/crypto.js"></script>
+<script src="/static/js/realestate.js"></script>
+<script src="/static/js/bonds.js"></script>
+<script src="/static/js/forex.js"></script>
+<script src="/static/js/etfs.js"></script>
+<script src="/static/js/career.js"></script>
+<script src="/static/js/tax.js"></script>
+<script src="/static/js/earnings.js"></script>
+<script src="/static/js/sec.js"></script>
+<script src="/static/js/leaderboard.js"></script>
+<script src="/static/js/heatmap.js"></script>
+<script src="/static/js/compare.js"></script>
+<script src="/static/js/botbuilder.js"></script>
+<script src="/static/js/predictions.js"></script>
+<script src="/static/js/pet.js"></script>
+<script src="/static/js/mining.js"></script>
+
+<script src="/static/js/dashboard.js"></script>
+<script src="/static/js/cmdk.js"></script>
+<script src="/static/js/cheats.js"></script>
+<script src="/static/js/router.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
